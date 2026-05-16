@@ -50,6 +50,15 @@ export function Footer() {
           <p className="font-mono tracking-[0.15em] uppercase">Made in San Francisco</p>
         </div>
       </div>
+      <div className="mt-16 w-full overflow-hidden">
+        <h2
+          aria-hidden="true"
+          className="select-none text-center font-semibold leading-[0.85] tracking-tighter text-foreground"
+          style={{ fontSize: "clamp(80px, 22vw, 360px)" }}
+        >
+          VIFTK
+        </h2>
+      </div>
     </footer>
   );
 }
