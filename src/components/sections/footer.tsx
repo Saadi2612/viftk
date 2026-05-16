@@ -14,7 +14,7 @@ const COLS = [
   },
   {
     title: "Contact",
-    items: ["hello@stratosphere.co", "+1 (415) 555-0140", "San Francisco, CA"],
+    items: ["hello@viftk.co", "+1 (415) 555-0140", "San Francisco, CA"],
   },
 ];
 
