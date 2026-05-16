@@ -68,7 +68,7 @@ export function SlideMenu() {
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-2 font-semibold tracking-tight"
               >
-                Stratosphere
+                Viftk
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
               </a>
               <button

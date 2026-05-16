@@ -1,6 +1,6 @@
 const COLS = [
   {
-    title: "Stratosphere",
+    title: "Viftk",
     items: ["A software studio building products for ambitious teams worldwide."],
     isBrand: true,
   },
@@ -41,7 +41,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col gap-4 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} Stratosphere Studio. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Viftk Studio. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <a href="#" className="hover:text-foreground">LinkedIn</a>
             <a href="#" className="hover:text-foreground">GitHub</a>
