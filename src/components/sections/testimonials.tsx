@@ -17,7 +17,7 @@ export function Testimonials() {
             className="max-w-4xl text-3xl font-medium leading-tight tracking-tight md:text-5xl"
             style={{ letterSpacing: "-0.02em" }}
           >
-            &ldquo;Stratosphere works like an extension of our team. They ship faster than
+            &ldquo;Viftk works like an extension of our team. They ship faster than
             our internal engineers and ask better questions than our consultants.&rdquo;
           </blockquote>
           <div className="mt-8 text-sm">

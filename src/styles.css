@@ -47,7 +47,7 @@
 :root {
   --radius: 12px;
 
-  /* Stratosphere light theme */
+  /* Viftk light theme */
   --background: oklch(0.985 0 0);              /* #FAFAFA */
   --foreground: oklch(0.145 0 0);              /* #0A0A0A */
   --card: oklch(1 0 0);                        /* #FFFFFF */

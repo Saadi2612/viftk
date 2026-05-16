@@ -24,7 +24,7 @@ export function Navbar() {
     >
       <div className="container-x flex h-16 items-center justify-between">
         <a href="#top" className="flex items-center gap-2 font-semibold tracking-tight">
-          <span className="text-base">Stratosphere</span>
+          <span className="text-base">Viftk</span>
           <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
         </a>
 

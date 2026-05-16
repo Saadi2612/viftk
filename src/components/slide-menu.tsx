@@ -68,7 +68,7 @@ export function SlideMenu() {
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-2 font-semibold tracking-tight"
               >
-                Stratosphere
+                Viftk
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
               </a>
               <button
@@ -114,10 +114,10 @@ export function SlideMenu() {
               >
                 <p className="eyebrow mb-3">Get in touch</p>
                 <a
-                  href="mailto:hello@stratosphere.co"
+                  href="mailto:hello@viftk.co"
                   className="text-base font-medium hover:text-primary"
                 >
-                  hello@stratosphere.co
+                  hello@viftk.co
                 </a>
                 <div className="mt-5 flex gap-3 text-muted-foreground">
                   <a href="#" aria-label="LinkedIn" className="hover:text-primary">LinkedIn</a>

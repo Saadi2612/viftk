@@ -72,9 +72,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Stratosphere — Software Studio" },
+      { title: "Viftk — Software Studio" },
       { name: "description", content: "A focused software studio designing and engineering products for ambitious teams." },
-      { property: "og:title", content: "Stratosphere — Software Studio" },
+      { property: "og:title", content: "Viftk — Software Studio" },
       { property: "og:description", content: "Software that feels inevitable. From first prototype to production scale." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

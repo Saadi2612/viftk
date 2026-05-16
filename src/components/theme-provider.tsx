@@ -11,7 +11,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    const stored = localStorage.getItem("stratosphere-theme") as Theme | null;
+    const stored = localStorage.getItem("viftk-theme") as Theme | null;
     const initial: Theme =
       stored ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     setTheme(initial);
@@ -20,7 +20,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
     if (typeof localStorage !== "undefined") {
-      localStorage.setItem("stratosphere-theme", theme);
+      localStorage.setItem("viftk-theme", theme);
     }
   }, [theme]);
 

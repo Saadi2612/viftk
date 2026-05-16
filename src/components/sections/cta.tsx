@@ -23,7 +23,7 @@ export function CTA() {
               a suggested next step.
             </p>
             <a
-              href="mailto:hello@stratosphere.co"
+              href="mailto:hello@viftk.co"
               className="mt-10 inline-flex h-12 items-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground transition-colors hover:bg-[var(--color-primary-hover)] active:scale-[0.98]"
             >
               Let&apos;s talk
