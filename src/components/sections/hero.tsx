@@ -48,8 +48,51 @@ export function Hero() {
           className="max-w-5xl font-semibold tracking-tight"
           style={{ fontSize: "clamp(48px, 8vw, 84px)", lineHeight: 1.05 }}
         >
-          We build software that feels inevitable.
+          We build{" "}
+          <span className="relative inline-block whitespace-nowrap">
+            software
+            <motion.svg
+              aria-hidden
+              viewBox="0 0 300 30"
+              preserveAspectRatio="none"
+              className="absolute left-0 right-0 -bottom-2 h-[0.35em] w-full text-primary"
+              fill="none"
+            >
+              <motion.path
+                d="M5 18 C 60 6, 140 6, 200 14 S 280 22, 295 12"
+                stroke="currentColor"
+                strokeWidth="4"
+                strokeLinecap="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 1.1, delay: 0.9, ease: "easeInOut" }}
+              />
+            </motion.svg>
+          </span>{" "}
+          that feels{" "}
+          <span className="relative inline-block whitespace-nowrap">
+            inevitable
+            <motion.svg
+              aria-hidden
+              viewBox="0 0 320 90"
+              preserveAspectRatio="none"
+              className="absolute -left-[6%] -top-[12%] h-[124%] w-[112%] text-primary"
+              fill="none"
+            >
+              <motion.path
+                d="M165 8 C 70 6, 12 22, 14 48 C 16 76, 130 86, 220 82 C 290 79, 312 60, 304 38 C 296 18, 230 6, 150 10"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 1.4, delay: 1.4, ease: "easeInOut" }}
+              />
+            </motion.svg>
+          </span>
+          .
         </motion.h1>
+
 
         <motion.p
           initial={{ opacity: 0, y: 16 }}
