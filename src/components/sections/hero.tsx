@@ -62,7 +62,7 @@ export function Hero() {
         }}
       />
 
-      {/* floating orbs with textured noise overlay */}
+      {/* floating orbs */}
       <motion.div
         aria-hidden
         animate={
@@ -71,27 +71,12 @@ export function Hero() {
             : { y: [0, -30, 0], scale: [1, 1.05, 1] }
         }
         transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute top-1/4 -right-24 h-[500px] w-[500px]"
-      >
-        <div
-          className="absolute inset-0 rounded-full opacity-25"
-          style={{
-            background: "var(--color-primary)",
-            filter: "blur(140px)",
-          }}
-        />
-        <div
-          className="absolute inset-0 rounded-full opacity-[0.22] mix-blend-overlay"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-            maskImage:
-              "radial-gradient(circle at center, black 0%, transparent 70%)",
-            WebkitMaskImage:
-              "radial-gradient(circle at center, black 0%, transparent 70%)",
-          }}
-        />
-      </motion.div>
+        className="pointer-events-none absolute top-1/4 -right-24 h-[500px] w-[500px] rounded-full opacity-25"
+        style={{
+          background: "var(--color-primary)",
+          filter: "blur(140px)",
+        }}
+      />
       <motion.div
         aria-hidden
         animate={
@@ -100,27 +85,12 @@ export function Hero() {
             : { y: [0, 30, 0], scale: [1, 1.05, 1] }
         }
         transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute -bottom-24 -left-24 h-[500px] w-[500px]"
-      >
-        <div
-          className="absolute inset-0 rounded-full opacity-20"
-          style={{
-            background: "var(--color-primary)",
-            filter: "blur(140px)",
-          }}
-        />
-        <div
-          className="absolute inset-0 rounded-full opacity-[0.22] mix-blend-overlay"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-            maskImage:
-              "radial-gradient(circle at center, black 0%, transparent 70%)",
-            WebkitMaskImage:
-              "radial-gradient(circle at center, black 0%, transparent 70%)",
-          }}
-        />
-      </motion.div>
+        className="pointer-events-none absolute -bottom-24 -left-24 h-[500px] w-[500px] rounded-full opacity-20"
+        style={{
+          background: "var(--color-primary)",
+          filter: "blur(140px)",
+        }}
+      />
 
       {/* subtle grain */}
       <div
