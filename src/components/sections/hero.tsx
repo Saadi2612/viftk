@@ -1,9 +1,13 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 
 const LOGOS = ["NORTHWIND", "HELIOS", "ATLAS", "ORBIT", "MERIDIAN"];
 
+const HEADLINE = "We build software that feels inevitable.";
+
 export function Hero() {
+  const reduce = useReducedMotion();
+  const words = HEADLINE.split(" ");
   return (
     <section
       id="top"
@@ -42,15 +46,47 @@ export function Hero() {
         </motion.p>
 
         <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: {},
+            visible: {
+              transition: reduce
+                ? { staggerChildren: 0 }
+                : { staggerChildren: 0.07, delayChildren: 0.15 },
+            },
+          }}
           className="max-w-5xl font-semibold tracking-tight"
           style={{ fontSize: "clamp(48px, 8vw, 84px)", lineHeight: 1.05 }}
         >
-          We build software that feels inevitable.
+          {words.map((word, i) => (
+            <span
+              key={i}
+              className="inline-block overflow-hidden align-baseline"
+              style={{ marginRight: i === words.length - 1 ? 0 : "0.25em" }}
+            >
+              <motion.span
+                className="inline-block will-change-transform"
+                variants={{
+                  hidden: reduce
+                    ? { opacity: 0 }
+                    : { opacity: 0, y: "0.5em", filter: "blur(8px)" },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    filter: "blur(0px)",
+                    transition: {
+                      duration: reduce ? 0.3 : 0.9,
+                      ease: [0.22, 1, 0.36, 1],
+                    },
+                  },
+                }}
+              >
+                {word}
+              </motion.span>
+            </span>
+          ))}
         </motion.h1>
-
 
         <motion.p
           initial={{ opacity: 0, y: 16 }}
