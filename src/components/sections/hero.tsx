@@ -1,89 +1,160 @@
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const LOGOS = ["NORTHWIND", "HELIOS", "ATLAS", "ORBIT", "MERIDIAN"];
 
-const HEADLINE = "We build software that feels inevitable.";
+const HEADLINE_LINE_1 = ["We", "build", "software"];
+const HEADLINE_LINE_2 = ["that", "feels", "inevitable."];
 
 export function Hero() {
   const reduce = useReducedMotion();
-  const words = HEADLINE.split(" ");
+
+  const wordContainer = {
+    hidden: {},
+    visible: {
+      transition: reduce
+        ? { staggerChildren: 0 }
+        : { staggerChildren: 0.06, delayChildren: 0.15 },
+    },
+  };
+
+  const wordChild = {
+    hidden: reduce
+      ? { opacity: 0 }
+      : { opacity: 0, y: "0.5em", filter: "blur(10px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: {
+        duration: reduce ? 0.3 : 0.85,
+        ease: [0.22, 1, 0.36, 1] as const,
+      },
+    },
+  };
+
   return (
     <section
       id="top"
-      className="relative flex min-h-screen items-center overflow-hidden pt-24"
+      className="relative flex min-h-screen items-center justify-center overflow-hidden pt-24"
     >
+      {/* mesh gradient */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(circle at 80% 20%, color-mix(in oklab, var(--color-primary) 14%, transparent), transparent 45%), radial-gradient(circle at 20% 80%, color-mix(in oklab, var(--color-primary) 10%, transparent), transparent 45%)",
+        }}
+      />
       {/* dot grid */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.35] dark:opacity-25"
+        className="pointer-events-none absolute inset-0 opacity-[0.18] dark:opacity-[0.08]"
         style={{
           backgroundImage:
-            "radial-gradient(circle, var(--color-border) 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
+            "radial-gradient(circle, var(--color-primary) 1px, transparent 1px)",
+          backgroundSize: "36px 36px",
           maskImage:
-            "radial-gradient(ellipse at center, black 40%, transparent 75%)",
-        }}
-      />
-      {/* blue glow bottom-right */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-40 -right-40 h-[600px] w-[600px] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, color-mix(in oklab, var(--color-primary) 35%, transparent), transparent 65%)",
+            "radial-gradient(ellipse at center, black 45%, transparent 80%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse at center, black 45%, transparent 80%)",
         }}
       />
 
-      <div className="container-x relative z-10 w-full">
-        <motion.p
+      {/* floating orbs */}
+      <motion.div
+        aria-hidden
+        animate={
+          reduce
+            ? undefined
+            : { y: [0, -30, 0], scale: [1, 1.05, 1] }
+        }
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute top-1/4 -right-24 h-[500px] w-[500px] rounded-full opacity-25"
+        style={{
+          background: "var(--color-primary)",
+          filter: "blur(140px)",
+        }}
+      />
+      <motion.div
+        aria-hidden
+        animate={
+          reduce
+            ? undefined
+            : { y: [0, 30, 0], scale: [1, 1.05, 1] }
+        }
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute -bottom-24 -left-24 h-[500px] w-[500px] rounded-full opacity-20"
+        style={{
+          background: "var(--color-primary)",
+          filter: "blur(140px)",
+        }}
+      />
+
+      {/* subtle grain */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.035] mix-blend-overlay"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+        }}
+      />
+
+      <div className="container-x relative z-10 flex w-full flex-col items-center text-center">
+        {/* glass eyebrow pill */}
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="eyebrow mb-8"
+          className="mb-10 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-background/40 px-4 py-1.5 backdrop-blur-md"
         >
-          // Software Studio
-        </motion.p>
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+          </span>
+          <span className="font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-primary">
+            Software Studio
+          </span>
+        </motion.div>
 
         <motion.h1
           initial="hidden"
           animate="visible"
-          variants={{
-            hidden: {},
-            visible: {
-              transition: reduce
-                ? { staggerChildren: 0 }
-                : { staggerChildren: 0.07, delayChildren: 0.15 },
-            },
-          }}
+          variants={wordContainer}
           className="max-w-5xl font-semibold tracking-tight"
-          style={{ fontSize: "clamp(48px, 8vw, 84px)", lineHeight: 1.05 }}
+          style={{ fontSize: "clamp(48px, 8.5vw, 96px)", lineHeight: 1.02, letterSpacing: "-0.03em" }}
         >
-          {words.map((word, i) => (
-            <span
-              key={i}
-              className="inline-block overflow-hidden align-baseline"
-              style={{ marginRight: i === words.length - 1 ? 0 : "0.25em" }}
-            >
-              <motion.span
-                className="inline-block will-change-transform"
-                variants={{
-                  hidden: reduce
-                    ? { opacity: 0 }
-                    : { opacity: 0, y: "0.5em", filter: "blur(8px)" },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    filter: "blur(0px)",
-                    transition: {
-                      duration: reduce ? 0.3 : 0.9,
-                      ease: [0.22, 1, 0.36, 1],
-                    },
-                  },
-                }}
-              >
-                {word}
-              </motion.span>
+          {[HEADLINE_LINE_1, HEADLINE_LINE_2].map((line, li) => (
+            <span key={li} className="block">
+              {line.map((word, i) => {
+                const isAccent = li === 1 && i === line.length - 1;
+                return (
+                  <span
+                    key={i}
+                    className="inline-block overflow-hidden align-baseline"
+                    style={{ marginRight: i === line.length - 1 ? 0 : "0.25em" }}
+                  >
+                    <motion.span
+                      variants={wordChild}
+                      className={`inline-block will-change-transform ${
+                        isAccent ? "text-primary" : ""
+                      }`}
+                      style={
+                        isAccent
+                          ? {
+                              filter:
+                                "drop-shadow(0 0 40px color-mix(in oklab, var(--color-primary) 45%, transparent))",
+                            }
+                          : undefined
+                      }
+                    >
+                      {word}
+                    </motion.span>
+                  </span>
+                );
+              })}
             </span>
           ))}
         </motion.h1>
@@ -91,8 +162,8 @@ export function Hero() {
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-6 max-w-[600px] text-lg text-muted-foreground"
+          transition={{ duration: 0.6, delay: 0.7 }}
+          className="mt-8 max-w-[640px] text-lg text-muted-foreground md:text-xl"
         >
           A focused studio designing and engineering products for ambitious teams —
           from first prototype to production scale.
@@ -101,18 +172,18 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-10 flex flex-wrap items-center gap-3"
+          transition={{ duration: 0.6, delay: 0.85 }}
+          className="mt-10 flex flex-wrap items-center justify-center gap-3"
         >
           <a
             href="#contact"
-            className="inline-flex h-12 items-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-[var(--color-primary-hover)] active:scale-[0.98]"
+            className="group inline-flex h-12 items-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-[0_20px_50px_-15px_color-mix(in_oklab,var(--color-primary)_55%,transparent)] transition-all hover:-translate-y-0.5 hover:bg-[var(--color-primary-hover)] hover:shadow-[0_28px_60px_-15px_color-mix(in_oklab,var(--color-primary)_65%,transparent)] active:translate-y-0 active:scale-[0.98]"
           >
             Start a project
           </a>
           <a
             href="#work"
-            className="inline-flex h-12 items-center gap-2 rounded-md border border-border bg-transparent px-6 text-sm font-medium hover:bg-accent active:scale-[0.98]"
+            className="inline-flex h-12 items-center gap-2 rounded-md border border-border bg-background/40 px-6 text-sm font-medium backdrop-blur-md transition-colors hover:border-primary/40 hover:bg-accent active:scale-[0.98]"
           >
             See our work <ArrowRight size={16} />
           </a>
@@ -121,8 +192,8 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="mt-20 flex flex-wrap items-center gap-x-10 gap-y-4 text-xs font-mono tracking-[0.18em] text-muted-foreground/70"
+          transition={{ duration: 0.8, delay: 1.05 }}
+          className="mt-20 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 font-mono text-xs tracking-[0.18em] text-muted-foreground/60"
         >
           {LOGOS.map((l) => (
             <span key={l}>{l}</span>
@@ -130,12 +201,24 @@ export function Hero() {
         </motion.div>
       </div>
 
+      {/* scroll cue */}
       <motion.div
-        animate={{ y: [0, 8, 0] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 1.4 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-muted-foreground/50"
       >
-        <ChevronDown size={20} />
+        <span
+          className="font-mono text-[9px] font-semibold uppercase tracking-[0.4em]"
+          style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+        >
+          Scroll
+        </span>
+        <motion.div
+          animate={{ scaleY: [0.4, 1, 0.4], opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+          className="h-14 w-px origin-top bg-gradient-to-b from-border via-muted-foreground/40 to-transparent"
+        />
       </motion.div>
     </section>
   );
