@@ -6,6 +6,8 @@ const LOGOS = ["NORTHWIND", "HELIOS", "ATLAS", "ORBIT", "MERIDIAN"];
 const HEADLINE = "We build software that feels inevitable.";
 
 export function Hero() {
+  const reduce = useReducedMotion();
+  const words = HEADLINE.split(" ");
   return (
     <section
       id="top"
