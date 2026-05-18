@@ -85,39 +85,31 @@ export function Hero() {
         }}
       />
 
-      {/* floating orbs */}
+      {/* floating orbs with pointer parallax */}
       <motion.div
         aria-hidden
-        animate={
-          reduce
-            ? undefined
-            : { y: [0, -30, 0], scale: [1, 1.05, 1] }
-        }
-        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute top-1/4 -right-24 h-[500px] w-[500px] rounded-full opacity-25"
-        style={{
-          background: "var(--color-primary)",
-          filter: "blur(140px)",
-          x: reduce ? 0 : orb1X,
-          y: reduce ? 0 : orb1Y,
-        }}
-      />
+        className="pointer-events-none absolute top-1/4 -right-24 h-[500px] w-[500px]"
+        style={{ x: reduce ? 0 : orb1X, y: reduce ? 0 : orb1Y }}
+      >
+        <motion.div
+          animate={reduce ? undefined : { y: [0, -30, 0], scale: [1, 1.05, 1] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          className="h-full w-full rounded-full opacity-25"
+          style={{ background: "var(--color-primary)", filter: "blur(140px)" }}
+        />
+      </motion.div>
       <motion.div
         aria-hidden
-        animate={
-          reduce
-            ? undefined
-            : { y: [0, 30, 0], scale: [1, 1.05, 1] }
-        }
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute -bottom-24 -left-24 h-[500px] w-[500px] rounded-full opacity-20"
-        style={{
-          background: "var(--color-primary)",
-          filter: "blur(140px)",
-          x: reduce ? 0 : orb2X,
-          y: reduce ? 0 : orb2Y,
-        }}
-      />
+        className="pointer-events-none absolute -bottom-24 -left-24 h-[500px] w-[500px]"
+        style={{ x: reduce ? 0 : orb2X, y: reduce ? 0 : orb2Y }}
+      >
+        <motion.div
+          animate={reduce ? undefined : { y: [0, 30, 0], scale: [1, 1.05, 1] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          className="h-full w-full rounded-full opacity-20"
+          style={{ background: "var(--color-primary)", filter: "blur(140px)" }}
+        />
+      </motion.div>
 
       {/* subtle grain */}
       <div
