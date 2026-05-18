@@ -98,6 +98,8 @@ export function Hero() {
         style={{
           background: "var(--color-primary)",
           filter: "blur(140px)",
+          x: reduce ? 0 : orb1X,
+          y: reduce ? 0 : orb1Y,
         }}
       />
       <motion.div
@@ -112,6 +114,8 @@ export function Hero() {
         style={{
           background: "var(--color-primary)",
           filter: "blur(140px)",
+          x: reduce ? 0 : orb2X,
+          y: reduce ? 0 : orb2Y,
         }}
       />
 
