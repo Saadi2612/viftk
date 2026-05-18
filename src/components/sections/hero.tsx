@@ -10,6 +10,28 @@ const HEADLINE_LINE_2 = ["that", "feels", "inevitable."];
 export function Hero() {
   const reduce = useReducedMotion();
 
+  // pointer parallax (disabled when prefers-reduced-motion)
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 50, damping: 20, mass: 0.6 });
+  const sy = useSpring(my, { stiffness: 50, damping: 20, mass: 0.6 });
+  const orb1X = useTransform(sx, (v) => v * 30);
+  const orb1Y = useTransform(sy, (v) => v * 30);
+  const orb2X = useTransform(sx, (v) => v * -40);
+  const orb2Y = useTransform(sy, (v) => v * -40);
+
+  useEffect(() => {
+    if (reduce) return;
+    const onMove = (e: PointerEvent) => {
+      const x = (e.clientX / window.innerWidth) * 2 - 1;
+      const y = (e.clientY / window.innerHeight) * 2 - 1;
+      mx.set(x);
+      my.set(y);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [reduce, mx, my]);
+
   const wordContainer = {
     hidden: {},
     visible: {
