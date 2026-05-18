@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 
 const LOGOS = ["NORTHWIND", "HELIOS", "ATLAS", "ORBIT", "MERIDIAN"];
