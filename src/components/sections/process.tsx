@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { Reveal } from "../reveal";
@@ -39,15 +41,15 @@ export function Process() {
   const lineWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   // Explicit keyframes lock each step at its final value — no extrapolation drift
-  const s0O = useTransform(scrollYProgress, [0, 0.25, 1],       [0, 1, 1]);
-  const s1O = useTransform(scrollYProgress, [0, 0.25, 0.5, 1],  [0, 0, 1, 1]);
-  const s2O = useTransform(scrollYProgress, [0, 0.5, 0.75, 1],  [0, 0, 1, 1]);
-  const s3O = useTransform(scrollYProgress, [0, 0.75, 1],       [0, 0, 1]);
+  const s0O = useTransform(scrollYProgress, [0, 0.25, 1], [0, 1, 1]);
+  const s1O = useTransform(scrollYProgress, [0, 0.25, 0.5, 1], [0, 0, 1, 1]);
+  const s2O = useTransform(scrollYProgress, [0, 0.5, 0.75, 1], [0, 0, 1, 1]);
+  const s3O = useTransform(scrollYProgress, [0, 0.75, 1], [0, 0, 1]);
 
-  const s0S = useTransform(scrollYProgress, [0, 0.25, 1],       [0.93, 1, 1]);
-  const s1S = useTransform(scrollYProgress, [0, 0.25, 0.5, 1],  [0.93, 0.93, 1, 1]);
-  const s2S = useTransform(scrollYProgress, [0, 0.5, 0.75, 1],  [0.93, 0.93, 1, 1]);
-  const s3S = useTransform(scrollYProgress, [0, 0.75, 1],       [0.93, 0.93, 1]);
+  const s0S = useTransform(scrollYProgress, [0, 0.25, 1], [0.93, 1, 1]);
+  const s1S = useTransform(scrollYProgress, [0, 0.25, 0.5, 1], [0.93, 0.93, 1, 1]);
+  const s2S = useTransform(scrollYProgress, [0, 0.5, 0.75, 1], [0.93, 0.93, 1, 1]);
+  const s3S = useTransform(scrollYProgress, [0, 0.75, 1], [0.93, 0.93, 1]);
 
   const g0O = useTransform(s0O, [0, 1], [0, 0.06]);
   const g1O = useTransform(s1O, [0, 1], [0, 0.06]);

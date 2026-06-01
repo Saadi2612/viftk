@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { ThemeProvider } from "@/components/theme-provider";
 import { MenuProvider } from "@/components/menu-context";
 import { Navbar } from "@/components/navbar";
@@ -11,11 +10,7 @@ import { Testimonials } from "@/components/sections/testimonials";
 import { CTA } from "@/components/sections/cta";
 import { FooterV2 } from "@/components/sections/footer-v2";
 
-export const Route = createFileRoute("/")({
-  component: Index,
-});
-
-function Index() {
+export default function HomePage() {
   return (
     <ThemeProvider>
       <MenuProvider>

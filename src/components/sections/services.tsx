@@ -1,3 +1,5 @@
+"use client";
+
 import { Code2, Smartphone, Sparkles, Cloud, Layers, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
 import { Reveal } from "../reveal";
@@ -40,7 +42,6 @@ const SERVICES = [
 export function Services() {
   return (
     <section id="services" className="border-t border-border py-32">
-
       <div className="container-x">
         <Reveal>
           <p className="eyebrow mb-4">// Services</p>
@@ -77,9 +78,7 @@ export function Services() {
             );
           })}
         </div>
-
       </div>
-
     </section>
   );
 }
