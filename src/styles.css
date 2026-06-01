@@ -115,6 +115,7 @@
 
   html {
     scroll-behavior: auto;
+    overflow-x: clip;
   }
 
   body {
@@ -124,7 +125,7 @@
     font-size: 16px;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
+    overflow-x: clip;
     transition:
       background-color 200ms ease,
       color 200ms ease;
@@ -222,6 +223,34 @@
       display: none;
     }
   }
+
+  /* Hero headline word reveal — CSS-driven so the LCP text paints on the first
+     frame (FCP timeline) instead of waiting for JS hydration to run motion. */
+  @keyframes hero-word-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.4em);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .hero-word {
+    display: inline-block;
+    opacity: 0;
+    animation: hero-word-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: var(--word-delay, 0s);
+    will-change: transform, opacity;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-word {
+      animation-duration: 0.3s;
+      animation-delay: 0s;
+      transform: none;
+    }
+  }
+
 
   /* Work section — editorial layout */
   .v1-items {

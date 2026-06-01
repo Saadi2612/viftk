@@ -2,7 +2,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { MenuProvider } from "@/components/menu-context";
 import { Navbar } from "@/components/navbar";
 import { SlideMenu } from "@/components/slide-menu";
-import { Hero } from "@/components/sections/hero";
+import { HeroV1 } from "@/components/sections/hero-v1";
 import { Services } from "@/components/sections/services";
 import { Process } from "@/components/sections/process";
 import { Work } from "@/components/sections/work";
@@ -17,7 +17,7 @@ export default function HomePage() {
         <Navbar />
         <SlideMenu />
         <main>
-          <Hero />
+          <HeroV1 />
           <Services />
           <Process />
           <Work />

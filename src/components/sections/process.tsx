@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform, useMotionValue, useMotionValueEvent } from "motion/react";
 import { Reveal } from "../reveal";
 
 const STEPS = [
@@ -38,18 +38,26 @@ export function Process() {
     offset: ["start start", "end end"],
   });
 
-  const lineWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  // Latch: progress follows scrollYProgress upward only.
+  // Resets to 0 when scrolled back above the section so re-entry animates cleanly.
+  // This prevents scrollYProgress going backward past the section from fading steps.
+  const progress = useMotionValue(0);
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    if (v < 0.01) progress.set(0);
+    else if (v > progress.get()) progress.set(v);
+  });
 
-  // Explicit keyframes lock each step at its final value — no extrapolation drift
-  const s0O = useTransform(scrollYProgress, [0, 0.25, 1], [0, 1, 1]);
-  const s1O = useTransform(scrollYProgress, [0, 0.25, 0.5, 1], [0, 0, 1, 1]);
-  const s2O = useTransform(scrollYProgress, [0, 0.5, 0.75, 1], [0, 0, 1, 1]);
-  const s3O = useTransform(scrollYProgress, [0, 0.75, 1], [0, 0, 1]);
+  const lineWidth = useTransform(progress, [0, 0.75], ["0%", "100%"]);
 
-  const s0S = useTransform(scrollYProgress, [0, 0.25, 1], [0.93, 1, 1]);
-  const s1S = useTransform(scrollYProgress, [0, 0.25, 0.5, 1], [0.93, 0.93, 1, 1]);
-  const s2S = useTransform(scrollYProgress, [0, 0.5, 0.75, 1], [0.93, 0.93, 1, 1]);
-  const s3S = useTransform(scrollYProgress, [0, 0.75, 1], [0.93, 0.93, 1]);
+  const s0O = useTransform(progress, [0, 0.15], [0, 1]);
+  const s1O = useTransform(progress, [0.15, 0.35], [0, 1]);
+  const s2O = useTransform(progress, [0.35, 0.55], [0, 1]);
+  const s3O = useTransform(progress, [0.55, 0.75], [0, 1]);
+
+  const s0S = useTransform(progress, [0, 0.15], [0.93, 1]);
+  const s1S = useTransform(progress, [0.15, 0.35], [0.93, 1]);
+  const s2S = useTransform(progress, [0.35, 0.55], [0.93, 1]);
+  const s3S = useTransform(progress, [0.55, 0.75], [0.93, 1]);
 
   const g0O = useTransform(s0O, [0, 1], [0, 0.06]);
   const g1O = useTransform(s1O, [0, 1], [0, 0.06]);

@@ -185,20 +185,13 @@ export function Hero() {
                 return (
                   <span
                     key={i}
-                    className="inline-block overflow-hidden align-baseline"
+                    className={`inline-block align-baseline ${isAccent ? "" : "overflow-hidden"}`}
                     style={{ marginRight: i === line.length - 1 ? 0 : "0.25em" }}
                   >
                     <motion.span
                       variants={wordChild}
-                      className={`inline-block will-change-transform ${isAccent ? "text-primary" : ""}`}
-                      style={
-                        isAccent
-                          ? {
-                              filter:
-                                "drop-shadow(0 0 40px color-mix(in oklab, var(--color-primary) 45%, transparent))",
-                            }
-                          : undefined
-                      }
+                      className={`inline-block will-change-transform ${isAccent ? "text-white bg-primary rounded-sm px-2" : ""}`}
+                      style={undefined}
                     >
                       {word}
                     </motion.span>
