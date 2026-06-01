@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext, useState, type ReactNode } from "react";
 
 const MenuContext = createContext<{ open: boolean; setOpen: (v: boolean) => void }>({

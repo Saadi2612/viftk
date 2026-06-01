@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
@@ -22,7 +24,6 @@ export function Navbar() {
           : "border-b border-transparent bg-transparent"
       }`}
     >
-
       <div className="container-x flex h-16 items-center justify-between">
         <a href="#top" className="flex items-center gap-2 font-semibold tracking-tight">
           <span className="text-base">Viftk</span>
@@ -46,7 +47,6 @@ export function Navbar() {
           </button>
         </div>
       </div>
-
     </header>
   );
 }

@@ -1,5 +1,4 @@
-@import "tailwindcss" source(none);
-@source "../src";
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -204,44 +203,118 @@
   }
 
   /* Hero bleed blobs — V3 accepted (wide gradient band) */
-  .hero-bleed { pointer-events: none; position: absolute; border-radius: 50%; }
-  .hero-bleed-center, .hero-bleed-left, .hero-bleed-right { display: none; }
-  .hero-bleed-band { opacity: 0.09; border-radius: 0; }
-  @media (prefers-reduced-motion: reduce) { .hero-bleed { display: none; } }
+  .hero-bleed {
+    pointer-events: none;
+    position: absolute;
+    border-radius: 50%;
+  }
+  .hero-bleed-center,
+  .hero-bleed-left,
+  .hero-bleed-right {
+    display: none;
+  }
+  .hero-bleed-band {
+    opacity: 0.09;
+    border-radius: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-bleed {
+      display: none;
+    }
+  }
 
   /* Work section — editorial layout */
-  .v1-items { gap: 4rem; }
-  .v1-img { aspect-ratio: 21/9; overflow: hidden; border-radius: 12px; }
+  .v1-items {
+    gap: 4rem;
+  }
+  .v1-img {
+    aspect-ratio: 21/9;
+    overflow: hidden;
+    border-radius: 12px;
+  }
 
   /* Work section — scale-focus scroll animation */
   @keyframes v3-focus-strong {
-    from { transform: scale(0.87); opacity: 0.1; }
-    to { transform: scale(1); opacity: 1; }
+    from {
+      transform: scale(0.87);
+      opacity: 0.1;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 }
 
 /* Services section — tonal tiers */
-.s3-card { padding: 1.75rem; transition: box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1); }
-.s3-card:hover { box-shadow: 0 8px 32px -8px color-mix(in oklab, var(--color-primary) 18%, transparent); }
-.s3-featured { background: var(--color-accent-soft); border-color: color-mix(in oklab, var(--color-primary) 22%, transparent); }
-.s3-regular { background: transparent; }
+.s3-card {
+  padding: 1.75rem;
+  transition: box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.s3-card:hover {
+  box-shadow: 0 8px 32px -8px color-mix(in oklab, var(--color-primary) 18%, transparent);
+}
+.s3-featured {
+  background: var(--color-accent-soft);
+  border-color: color-mix(in oklab, var(--color-primary) 22%, transparent);
+}
+.s3-regular {
+  background: transparent;
+}
 
 /* CTA section */
-.v3-surface { background-color: var(--background); color: var(--foreground); }
-.v3-surface .eyebrow { color: var(--muted-foreground); }
-.v3-muted { color: var(--muted-foreground); }
-.v3-word { color: var(--color-primary); filter: drop-shadow(0 0 11.2px color-mix(in oklab, var(--color-primary) 40%, transparent)); }
+.v3-surface {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+.v3-surface .eyebrow {
+  color: var(--muted-foreground);
+}
+.v3-muted {
+  color: var(--muted-foreground);
+}
+.v3-word {
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 11.2px color-mix(in oklab, var(--color-primary) 40%, transparent));
+}
 
 /* CTA section — hero echo */
-.cta-inner { padding-top: 8rem; padding-bottom: 8rem; }
-.cta-heading { font-size: clamp(40px, 5.5vw, 72px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.02; }
-.cta-accent { color: color-mix(in oklab, var(--color-primary) 80%, currentColor); filter: drop-shadow(0 0 11.2px color-mix(in oklab, var(--color-primary) 40%, transparent)); }
-.cta-btn { box-shadow: 0 20px 50px -15px color-mix(in oklab, var(--color-primary) 55%, transparent); transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease, background-color 150ms; }
-.cta-btn:hover { transform: translateY(-2px); background-color: var(--color-primary-hover); box-shadow: 0 28px 60px -15px color-mix(in oklab, var(--color-primary) 65%, transparent); }
-.cta-btn:active { transform: scale(0.98); }
+.cta-inner {
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+}
+.cta-heading {
+  font-size: clamp(40px, 5.5vw, 72px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+.cta-accent {
+  color: color-mix(in oklab, var(--color-primary) 80%, currentColor);
+  filter: drop-shadow(0 0 11.2px color-mix(in oklab, var(--color-primary) 40%, transparent));
+}
+.cta-btn {
+  box-shadow: 0 20px 50px -15px color-mix(in oklab, var(--color-primary) 55%, transparent);
+  transition:
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 200ms ease,
+    background-color 150ms;
+}
+.cta-btn:hover {
+  transform: translateY(-2px);
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 28px 60px -15px color-mix(in oklab, var(--color-primary) 65%, transparent);
+}
+.cta-btn:active {
+  transform: scale(0.98);
+}
 @media (prefers-reduced-motion: reduce) {
-  .cta-btn { transition: background-color 150ms; }
-  .cta-btn:hover { transform: none; }
+  .cta-btn {
+    transition: background-color 150ms;
+  }
+  .cta-btn:hover {
+    transform: none;
+  }
 }
 
 @supports (animation-timeline: view()) {
@@ -252,6 +325,8 @@
     transform-origin: center bottom;
   }
   @media (prefers-reduced-motion: reduce) {
-    .v3a-item { animation: none !important; }
+    .v3a-item {
+      animation: none !important;
+    }
   }
 }
