@@ -7,6 +7,8 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
+import Lenis from "lenis";
 
 import appCss from "../styles.css?url";
 
@@ -73,15 +75,35 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Viftk — Software Studio" },
-      { name: "description", content: "A focused software studio designing and engineering products for ambitious teams." },
+      {
+        name: "description",
+        content:
+          "A focused software studio designing and engineering products for ambitious teams.",
+      },
       { property: "og:title", content: "Viftk — Software Studio" },
-      { property: "og:description", content: "A focused software studio designing and engineering products for ambitious teams." },
+      {
+        property: "og:description",
+        content:
+          "A focused software studio designing and engineering products for ambitious teams.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Viftk — Software Studio" },
-      { name: "twitter:description", content: "A focused software studio designing and engineering products for ambitious teams." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9d70f489-a335-48ee-b52f-80831d547d78/id-preview-2ad70ddf--94ac20e6-a1a7-4148-bbe7-f77bf8171288.lovable.app-1778955627856.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9d70f489-a335-48ee-b52f-80831d547d78/id-preview-2ad70ddf--94ac20e6-a1a7-4148-bbe7-f77bf8171288.lovable.app-1778955627856.png" },
+      {
+        name: "twitter:description",
+        content:
+          "A focused software studio designing and engineering products for ambitious teams.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9d70f489-a335-48ee-b52f-80831d547d78/id-preview-2ad70ddf--94ac20e6-a1a7-4148-bbe7-f77bf8171288.lovable.app-1778955627856.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9d70f489-a335-48ee-b52f-80831d547d78/id-preview-2ad70ddf--94ac20e6-a1a7-4148-bbe7-f77bf8171288.lovable.app-1778955627856.png",
+      },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -115,6 +137,27 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    });
+
+    let rafId: number;
+    function raf(time: number) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

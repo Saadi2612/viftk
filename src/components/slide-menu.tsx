@@ -108,10 +108,7 @@ export function SlideMenu() {
                 ))}
               </nav>
 
-              <motion.div
-                variants={itemVariants}
-                className="mt-auto border-t border-border pt-8"
-              >
+              <motion.div variants={itemVariants} className="mt-auto border-t border-border pt-8">
                 <p className="eyebrow mb-3">Get in touch</p>
                 <a
                   href="mailto:hello@viftk.co"
@@ -120,11 +117,17 @@ export function SlideMenu() {
                   hello@viftk.co
                 </a>
                 <div className="mt-5 flex gap-3 text-muted-foreground">
-                  <a href="#" aria-label="LinkedIn" className="hover:text-primary">LinkedIn</a>
+                  <a href="#" aria-label="LinkedIn" className="hover:text-primary">
+                    LinkedIn
+                  </a>
                   <span>·</span>
-                  <a href="#" aria-label="GitHub" className="hover:text-primary">GitHub</a>
+                  <a href="#" aria-label="GitHub" className="hover:text-primary">
+                    GitHub
+                  </a>
                   <span>·</span>
-                  <a href="#" aria-label="X" className="hover:text-primary">X</a>
+                  <a href="#" aria-label="X" className="hover:text-primary">
+                    X
+                  </a>
                 </div>
               </motion.div>
             </motion.div>

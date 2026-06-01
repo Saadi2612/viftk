@@ -8,7 +8,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
+    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.9);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -16,12 +16,13 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 backdrop-blur-md ${
+      className={`fixed inset-x-0 top-0 z-40 transition-colors duration-300 ${
         scrolled
-          ? "border-b border-border bg-background/80"
-          : "border-b border-transparent bg-background/40"
+          ? "border-b border-border bg-background/80 backdrop-blur-md"
+          : "border-b border-transparent bg-transparent"
       }`}
     >
+
       <div className="container-x flex h-16 items-center justify-between">
         <a href="#top" className="flex items-center gap-2 font-semibold tracking-tight">
           <span className="text-base">Viftk</span>
@@ -45,6 +46,7 @@ export function Navbar() {
           </button>
         </div>
       </div>
+
     </header>
   );
 }

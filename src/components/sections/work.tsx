@@ -1,38 +1,36 @@
+import { ArrowRight } from "lucide-react";
 import { Reveal } from "../reveal";
 
 const WORK = [
   {
-    client: "NORTHWIND LOGISTICS",
-    title: "A control tower for global freight operations",
+    client: "FOLIUM OPS SUITE",
+    title: "One dashboard for people, assets, and ops. No tab-switching.",
     metrics: [
-      { v: "+240%", l: "operator throughput" },
-      { v: "−63%", l: "incident response time" },
+      { v: "3 hrs", l: "saved per manager, per week" },
+      { v: "−68%", l: "admin overhead per manager" },
     ],
-    tags: ["Platform", "Realtime", "Design System"],
-    gradient:
-      "linear-gradient(135deg, oklch(0.564 0.197 261.5) 0%, oklch(0.35 0.15 270) 100%)",
+    tags: ["Ops", "Dashboard", "Enterprise"],
+    img: "/work/folium-ops.png",
   },
   {
-    client: "HELIOS HEALTH",
-    title: "Clinician-first records, rebuilt from scratch",
+    client: "PROPFLOW",
+    title: "Sales analytics that surface what actually matters",
     metrics: [
-      { v: "12 min", l: "saved per patient" },
-      { v: "98", l: "NPS at rollout" },
+      { v: "+45%", l: "pipeline throughput in 90 days" },
+      { v: "7×", l: "faster deal-stage visibility" },
     ],
-    tags: ["Product", "Mobile", "HIPAA"],
-    gradient:
-      "linear-gradient(135deg, oklch(0.7 0.13 200) 0%, oklch(0.4 0.1 220) 100%)",
+    tags: ["Analytics", "Dashboard", "SaaS"],
+    img: "/work/propflow-dashboard.png",
   },
   {
-    client: "ATLAS FINANCE",
-    title: "An AI copilot for portfolio analysts",
+    client: "WHISPER",
+    title: "Turning hours of video into minutes of insight",
     metrics: [
-      { v: "4×", l: "research throughput" },
-      { v: "$2.1M", l: "annual cost saved" },
+      { v: "10×", l: "faster content review" },
+      { v: "95%+", l: "transcript accuracy" },
     ],
-    tags: ["AI", "Enterprise", "Audit-ready"],
-    gradient:
-      "linear-gradient(135deg, oklch(0.25 0.05 260) 0%, oklch(0.15 0.03 260) 100%)",
+    tags: ["AI", "SaaS", "Productivity"],
+    img: "/work/whisper.png",
   },
 ];
 
@@ -42,63 +40,61 @@ export function Work() {
       <div className="container-x">
         <Reveal>
           <p className="eyebrow mb-4">// Selected work</p>
-          <h2 className="max-w-2xl text-4xl md:text-5xl">
+          <h2 className="max-w-2xl text-balance text-4xl md:text-5xl">
             Outcomes our clients still talk about.
           </h2>
         </Reveal>
-
-        <div className="mt-16 flex flex-col gap-6">
-          {WORK.map((w, i) => (
-            <Reveal key={w.title} delay={i * 0.05}>
-              <a
-                href="#contact"
-                className="group block overflow-hidden rounded-xl border border-border bg-card"
-              >
-                <div className="grid md:grid-cols-2">
-                  <div className="aspect-[4/3] overflow-hidden md:aspect-auto">
-                    <div
-                      className="h-full w-full transition-transform duration-500 group-hover:scale-105"
-                      style={{ background: w.gradient }}
-                    />
+        <div className="mt-16 flex flex-col v1-items">
+          {WORK.map((w) => (
+            <div key={w.title} className="group v3a-item">
+              <div className="v1-img">
+                <img
+                  src={w.img}
+                  alt={w.client}
+                  className="h-full w-full object-cover object-top v1-img-inner"
+                />
+              </div>
+              <div className="mt-8 grid md:grid-cols-2 gap-8 md:gap-16">
+                <div>
+                  <p className="eyebrow">{w.client}</p>
+                  <h3 className="mt-3 text-2xl md:text-3xl leading-snug">{w.title}</h3>
+                </div>
+                <div className="flex flex-col justify-between">
+                  <div className="flex flex-wrap gap-x-8 gap-y-3">
+                    {w.metrics.map((m) => (
+                      <div key={m.l}>
+                        <div className="text-3xl font-semibold tracking-tight text-primary tabular-nums">
+                          {m.v}
+                        </div>
+                        <div className="mt-1 text-xs text-muted-foreground">{m.l}</div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex flex-col justify-between p-8 md:p-12">
-                    <div>
-                      <p className="eyebrow">{w.client}</p>
-                      <h3 className="mt-4 text-2xl md:text-3xl">
-                        <span className="relative inline-block">
-                          {w.title}
-                          <span className="absolute -bottom-1 left-0 h-px w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+                  <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex flex-wrap gap-1.5">
+                      {w.tags.map((t) => (
+                        <span
+                          key={t}
+                          className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground"
+                        >
+                          {t}
                         </span>
-                      </h3>
+                      ))}
                     </div>
-
-                    <div className="mt-10">
-                      <div className="flex flex-wrap gap-x-10 gap-y-4">
-                        {w.metrics.map((m) => (
-                          <div key={m.l}>
-                            <div className="text-3xl font-semibold tracking-tight text-primary">
-                              {m.v}
-                            </div>
-                            <div className="mt-1 text-xs text-muted-foreground">{m.l}</div>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="mt-6 flex flex-wrap gap-2">
-                        {w.tags.map((t) => (
-                          <span
-                            key={t}
-                            className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground"
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                    <a
+                      href="#contact"
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors hover:text-primary/80 shrink-0"
+                    >
+                      Start a similar project
+                      <ArrowRight
+                        size={14}
+                        className="transition-transform duration-200 group-hover:translate-x-1"
+                      />
+                    </a>
                   </div>
                 </div>
-              </a>
-            </Reveal>
+              </div>
+            </div>
           ))}
         </div>
       </div>

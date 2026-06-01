@@ -9,7 +9,7 @@ import { Process } from "@/components/sections/process";
 import { Work } from "@/components/sections/work";
 import { Testimonials } from "@/components/sections/testimonials";
 import { CTA } from "@/components/sections/cta";
-import { Footer } from "@/components/sections/footer";
+import { FooterV2 } from "@/components/sections/footer-v2";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -29,7 +29,7 @@ function Index() {
           <Testimonials />
           <CTA />
         </main>
-        <Footer />
+        <FooterV2 />
       </MenuProvider>
     </ThemeProvider>
   );
