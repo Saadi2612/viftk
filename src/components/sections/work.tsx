@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "../reveal";
 
@@ -50,10 +51,12 @@ export function Work() {
           {WORK.map((w) => (
             <div key={w.title} className="group v3a-item">
               <div className="v1-img">
-                <img
+                <Image
                   src={w.img}
                   alt={w.client}
-                  className="h-full w-full object-cover object-top v1-img-inner"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 900px"
+                  className="object-cover object-top v1-img-inner"
                 />
               </div>
               <div className="mt-8 grid md:grid-cols-2 gap-8 md:gap-16">

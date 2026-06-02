@@ -294,19 +294,19 @@ export function HeroV1() {
                             rotate: -1.5,
                             opacity: 1,
                             scaleX: 1,
-                            transition: { delay: 0.4, duration: 0.5, ease: "easeOut" },
+                            transition: { delay: 0.4, duration: 0.5 },
                           },
                           hovered: {
                             rotate: 0,
                             opacity: 1,
                             scaleX: 1,
-                            transition: { duration: 0.2, ease: "easeOut" },
+                            transition: { duration: 0.1 },
                           },
                         }}
                       />
                     )}
                     <span
-                      className={`hero-word ${isAccent ? "relative px-1" : ""}`}
+                      className={`hero-word ${isAccent ? "text-white dark:text-black relative px-1" : ""}`}
                       style={
                         {
                           "--word-delay": `${0.2 + wordIndex * 0.06}s`,
@@ -314,7 +314,8 @@ export function HeroV1() {
                         } as CSSProperties
                       }
                     >
-                      {isAccent ? (
+                      {word}
+                      {/* {isAccent ? (
                         <motion.span
                           initial={{ color: "#0a0a0a" }}
                           animate={{
@@ -326,7 +327,7 @@ export function HeroV1() {
                         </motion.span>
                       ) : (
                         word
-                      )}
+                      )} */}
                     </span>
                   </motion.span>
                 );

@@ -36,8 +36,8 @@
   --color-surface-invert: var(--surface-invert);
   --color-surface-invert-foreground: var(--surface-invert-foreground);
 
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.06);
   --shadow-hover-dark: 0 8px 30px rgba(0, 0, 0, 0.5);
@@ -188,7 +188,7 @@
     position: absolute;
     top: -0.5rem;
     right: -0.25rem;
-    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
     font-size: clamp(76px, 8.5vw, 104px);
     font-weight: 700;
     color: var(--foreground);
@@ -251,12 +251,12 @@
     }
   }
 
-
   /* Work section — editorial layout */
   .v1-items {
     gap: 4rem;
   }
   .v1-img {
+    position: relative;
     aspect-ratio: 21/9;
     overflow: hidden;
     border-radius: 12px;
@@ -350,7 +350,7 @@
   .v3a-item {
     animation: v3-focus-strong cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-timeline: view();
-    animation-range: entry 0% entry 55%;
+    animation-range: entry 10% entry 80%;
     transform-origin: center bottom;
   }
   @media (prefers-reduced-motion: reduce) {
