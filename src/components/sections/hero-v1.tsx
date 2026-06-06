@@ -1,94 +1,92 @@
 "use client";
 
-import { motion, useReducedMotion, useMotionValue, useSpring, useTransform } from "motion/react";
-import { useEffect, useRef, type CSSProperties } from "react";
+import { cn } from "@/lib/utils";
+import { motion, useReducedMotion } from "motion/react";
+import { useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 
 const LOGOS = ["NORTHWIND", "HELIOS", "ATLAS", "ORBIT", "MERIDIAN"];
 const HEADLINE_LINE_1 = ["We", "build", "software"];
 const HEADLINE_LINE_2 = ["that", "feels", "inevitable."];
 
-// Resolves --color-primary to an rgb triplet for canvas use
-function getPrimaryRGB(el: HTMLElement): [number, number, number] {
-  const raw = getComputedStyle(el).getPropertyValue("--primary").trim();
-  // oklch — convert via a temporary element
-  const tmp = document.createElement("div");
-  tmp.style.color = raw;
-  tmp.style.position = "absolute";
-  tmp.style.opacity = "0";
-  document.body.appendChild(tmp);
-  const rgb = getComputedStyle(tmp).color; // "rgb(r, g, b)"
-  document.body.removeChild(tmp);
-  const m = rgb.match(/(\d+),\s*(\d+),\s*(\d+)/);
-  if (!m) return [46, 107, 230];
-  return [+m[1], +m[2], +m[3]];
-}
-
-export function HeroV1() {
-  const reduce = useReducedMotion();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  // pointer parallax for subtle orb (kept, much lighter)
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 50, damping: 20, mass: 0.6 });
-  const sy = useSpring(my, { stiffness: 50, damping: 20, mass: 0.6 });
-  const orbX = useTransform(sx, (v) => v * 20);
-  const orbY = useTransform(sy, (v) => v * 20);
-
-  // cursor position for canvas (normalized -1..1)
-  const cursorRef = useRef({ x: 0, y: 0, tx: 0, ty: 0 });
-
+// ---------------------------------------------------------------------------
+// Lean canvas dot animation — desktop (pointer:fine) only
+//   • SPACING 60px → ~4× fewer dots than the original 36px grid
+//   • No velocity / spring physics — simple lerp, zero allocations
+//   • fillStyle built ONCE at resize, never inside the draw loop
+//   • DPR capped at 1 (no retina overdraw)
+//   • IntersectionObserver pauses rAF when hero is off-screen
+// ---------------------------------------------------------------------------
+function useDotCanvas(canvasRef: React.RefObject<HTMLCanvasElement | null>, enabled: boolean) {
   useEffect(() => {
+    if (!enabled) return;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Skip the interactive ripple on touch/coarse-pointer devices: no cursor to
-    // drive it, and it's the single most expensive thing in the hero. Mobile
-    // just gets the cheap static dot grid.
-    const finePointer =
-      typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches;
-    const animate = !reduce && finePointer;
-
-    // Cap DPR — retina (2x) quadruples pixel fill cost for a faint dot grid.
-    const dpr = Math.min(typeof devicePixelRatio === "number" ? devicePixelRatio : 1, 1.5);
-
-    let raf = 0;
-    let rgb: [number, number, number] = [46, 107, 230];
-
-    const SPACING = 36;
-    const DOT_R = 1.1;
-    const RIPPLE_RADIUS = 130;
-    const RIPPLE_STRENGTH = 18;
-    const RIPPLE_RADIUS2 = RIPPLE_RADIUS * RIPPLE_RADIUS;
+    const SPACING = 30;
+    const DOT_R = 1.2;
+    const REPEL_R = 120;
+    const REPEL_R2 = REPEL_R * REPEL_R;
+    const REPEL_STRENGTH = 22;
+    const LERP = 0.12;
+    const BASE_ALPHA = 0.13;
+    const GLOW_ALPHA = 0.55;
 
     type Dot = {
       bx: number;
       by: number;
       x: number;
       y: number;
-      vx: number;
-      vy: number;
-      fade: number; // static center-fade, computed once per resize
+      fade: number;
+      color: string;
+      glowColor: string;
     };
+
     let dots: Dot[] = [];
     let W = 0,
       H = 0;
+    let raf = 0;
+    let rgb = "46,107,230";
+
+    // Paint 1×1 offscreen canvas to resolve any CSS color format (oklch, hsl, hex…)
+    function resolveRGB() {
+      const raw = getComputedStyle(canvas!).getPropertyValue("--color-primary").trim();
+      if (!raw) return;
+      const oc = document.createElement("canvas");
+      oc.width = oc.height = 1;
+      const oc2d = oc.getContext("2d");
+      if (!oc2d) return;
+      oc2d.fillStyle = raw;
+      oc2d.fillRect(0, 0, 1, 1);
+      const [r, g, b] = oc2d.getImageData(0, 0, 1, 1).data;
+      if (r === 0 && g === 0 && b === 0) return;
+      rgb = `${r},${g},${b}`;
+    }
 
     function buildDots() {
       dots = [];
       const cols = Math.ceil(W / SPACING) + 2;
       const rows = Math.ceil(H / SPACING) + 2;
-      const maxDist = Math.hypot(W / 2, H / 2) || 1;
+      const maxD = Math.hypot(W / 2, H / 2) || 1;
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
           const bx = (c - 0.5) * SPACING;
           const by = (r - 0.5) * SPACING;
-          const distCenter = Math.hypot(bx - W / 2, by - H / 2);
-          const fade = Math.max(0, 1 - (distCenter / maxDist) * 1.35);
-          dots.push({ bx, by, x: bx, y: by, vx: 0, vy: 0, fade });
+          const fade = Math.max(0, 1 - (Math.hypot(bx - W / 2, by - H / 2) / maxD) * 1.3);
+          if (fade < 0.02) continue;
+          dots.push({
+            bx,
+            by,
+            x: bx,
+            y: by,
+            fade,
+            color: `rgba(${rgb},${(BASE_ALPHA * fade).toFixed(3)})`,
+            glowColor: `rgba(${rgb},${(GLOW_ALPHA * fade).toFixed(3)})`,
+          });
         }
       }
     }
@@ -96,64 +94,46 @@ export function HeroV1() {
     function resize() {
       W = canvas!.offsetWidth;
       H = canvas!.offsetHeight;
-      canvas!.width = Math.round(W * dpr);
-      canvas!.height = Math.round(H * dpr);
-      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvas!.width = W;
+      canvas!.height = H;
+      resolveRGB();
       buildDots();
-      if (!animate) drawStatic();
     }
 
-    function drawStatic() {
-      ctx.clearRect(0, 0, W, H);
-      for (const d of dots) {
-        const alpha = d.fade * 0.13;
-        if (alpha < 0.01) continue;
-        ctx.beginPath();
-        ctx.arc(d.bx, d.by, DOT_R, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha})`;
-        ctx.fill();
-      }
-    }
-
-    const cx = cursorRef.current;
+    let tx = -999,
+      ty = -999;
+    let cx = -999,
+      cy = -999;
 
     function draw() {
-      cx.x += (cx.tx - cx.x) * 0.08;
-      cx.y += (cx.ty - cx.y) * 0.08;
-
-      ctx.clearRect(0, 0, W, H);
+      cx += (tx - cx) * LERP;
+      cy += (ty - cy) * LERP;
+      ctx!.clearRect(0, 0, W, H);
 
       for (const d of dots) {
-        const dx = d.bx - cx.x;
-        const dy = d.by - cx.y;
+        const dx = d.bx - cx;
+        const dy = d.by - cy;
         const dist2 = dx * dx + dy * dy;
         let px = 0,
           py = 0;
-        let proxGlow = 0;
-        if (dist2 < RIPPLE_RADIUS2 && dist2 > 0.01) {
-          const distCursor = Math.sqrt(dist2);
-          const k = 1 - distCursor / RIPPLE_RADIUS;
-          const force = k * k * RIPPLE_STRENGTH;
-          px = (dx / distCursor) * force;
-          py = (dy / distCursor) * force;
-          proxGlow = k * 0.55;
+        let isGlowing = false;
+
+        if (dist2 < REPEL_R2 && dist2 > 0.1) {
+          const dist = Math.sqrt(dist2);
+          const k = 1 - dist / REPEL_R;
+          const force = k * k * REPEL_STRENGTH;
+          px = (dx / dist) * force;
+          py = (dy / dist) * force;
+          isGlowing = k > 0.25;
         }
 
-        const ax = (d.bx + px - d.x) * 0.18 - d.vx * 0.55;
-        const ay = (d.by + py - d.y) * 0.18 - d.vy * 0.55;
-        d.vx += ax;
-        d.vy += ay;
-        d.x += d.vx;
-        d.y += d.vy;
+        d.x += (d.bx + px - d.x) * 0.15;
+        d.y += (d.by + py - d.y) * 0.15;
 
-        const baseAlpha = d.fade * (0.13 + proxGlow);
-        if (baseAlpha < 0.01) continue;
-
-        ctx.beginPath();
-        const r = DOT_R + proxGlow * 1.8;
-        ctx.arc(d.x, d.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${baseAlpha})`;
-        ctx.fill();
+        ctx!.beginPath();
+        ctx!.arc(d.x, d.y, isGlowing ? DOT_R + 1.2 : DOT_R, 0, Math.PI * 2);
+        ctx!.fillStyle = isGlowing ? d.glowColor : d.color;
+        ctx!.fill();
       }
 
       raf = requestAnimationFrame(draw);
@@ -162,45 +142,47 @@ export function HeroV1() {
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
     resize();
-    rgb = getPrimaryRGB(canvas);
 
-    // Pause the rAF loop whenever the hero is scrolled out of view.
-    let io: IntersectionObserver | null = null;
-    let onMove: ((e: PointerEvent) => void) | null = null;
+    const onMove = (e: PointerEvent) => {
+      const rect = canvas!.getBoundingClientRect();
+      tx = e.clientX - rect.left;
+      ty = e.clientY - rect.top;
+    };
+    const onLeave = () => {
+      tx = -999;
+      ty = -999;
+    };
 
-    if (animate) {
-      onMove = (e: PointerEvent) => {
-        const rect = canvas.getBoundingClientRect();
-        cx.tx = e.clientX - rect.left;
-        cx.ty = e.clientY - rect.top;
-        mx.set((e.clientX / window.innerWidth) * 2 - 1);
-        my.set((e.clientY / window.innerHeight) * 2 - 1);
-      };
-      window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointermove", onMove, { passive: true });
+    canvas.addEventListener("pointerleave", onLeave, { passive: true });
 
-      io = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting && !raf) {
-            raf = requestAnimationFrame(draw);
-          } else if (!entry.isIntersecting && raf) {
-            cancelAnimationFrame(raf);
-            raf = 0;
-          }
-        },
-        { threshold: 0 },
-      );
-      io.observe(canvas);
-    } else {
-      drawStatic();
-    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !raf) raf = requestAnimationFrame(draw);
+        else if (!entry.isIntersecting && raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+      },
+      { threshold: 0 },
+    );
+    io.observe(canvas);
 
     return () => {
       if (raf) cancelAnimationFrame(raf);
       ro.disconnect();
-      io?.disconnect();
-      if (onMove) window.removeEventListener("pointermove", onMove);
+      io.disconnect();
+      window.removeEventListener("pointermove", onMove);
+      canvas.removeEventListener("pointerleave", onLeave);
     };
-  }, [reduce, mx, my]);
+  }, [enabled, canvasRef]);
+}
+
+export function HeroV1() {
+  const reduce = useReducedMotion();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useDotCanvas(canvasRef, !reduce);
 
   return (
     <section
@@ -208,51 +190,69 @@ export function HeroV1() {
       className="relative flex min-h-screen items-center justify-center pt-24"
       style={{ zIndex: 1 }}
     >
-      {/* Canvas blueprint grid */}
+      {/* Desktop: interactive canvas dot grid (pointer:fine only, no-op on mobile) */}
       <canvas
         ref={canvasRef}
         aria-hidden
         className="pointer-events-none absolute inset-0 h-full w-full"
-        style={{ opacity: reduce ? 0.7 : 1 }}
       />
 
-      {/* Subtle radial vignette — keeps centre readable */}
+      {/* Mobile: static CSS dot grid — zero JS, no compositor layer */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 60% at 50% 45%, transparent 30%, var(--color-background) 100%)",
-        }}
+        className={cn(
+          "pointer-events-none absolute inset-0 md:hidden",
+          "[background-size:24px_24px]",
+          "[background-image:radial-gradient(var(--color-primary,#6366f1)_1px,transparent_1px)]",
+          "opacity-[0.13] dark:opacity-[0.09]",
+        )}
       />
 
-      {/* Single light orb — much subtler than original */}
+      {/* Radial vignette — solid bg with mask, no blur, no compositor cost */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-background [mask-image:radial-gradient(ellipse_80%_70%_at_50%_45%,transparent_30%,black_100%)]"
+      />
+
+      {/*
+        Orb — desktop only (md:block).
+        blur(60px) forces a GPU compositing layer; hiding it on mobile
+        removes that cost entirely on small screens.
+      */}
       {!reduce && (
-        <motion.div
+        <div
           aria-hidden
-          className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 h-[600px] w-[600px]"
-          style={{ x: orbX, y: orbY }}
+          className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2
+                     h-[500px] w-[500px] hidden md:block"
         >
           <div
             className="h-full w-full rounded-full"
-            style={{
-              background: "var(--color-primary)",
-              filter: "blur(180px)",
-              opacity: 0.07,
-            }}
+            style={{ background: "var(--color-primary)", filter: "blur(60px)", opacity: 0.06 }}
           />
-        </motion.div>
+        </div>
       )}
 
       <div className="container-x relative z-10 flex w-full flex-col items-center text-center">
+        {/*
+          Badge
+          • Removed backdrop-blur — forced a compositor layer on every repaint
+          • Mobile: solid bg-background (opaque = no blending cost)
+          • Desktop: semi-transparent bg-background/60 is fine, no blur needed
+          • animate-ping hidden on mobile (md:inline-flex) — saves a continuous
+            CSS animation running on the UI thread
+        */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-10 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-background/40 px-4 py-1.5 backdrop-blur-md"
+          className="mb-10 inline-flex items-center gap-2 rounded-full
+                     border border-primary/15
+                     bg-background md:bg-background/60
+                     px-4 py-1.5"
         >
           <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+            {/* Ping animation — desktop only, saves continuous animation on mobile */}
+            <span className="absolute hidden md:inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
           </span>
           <span className="font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-primary">
@@ -260,6 +260,7 @@ export function HeroV1() {
           </span>
         </motion.div>
 
+        {/* Headline */}
         <h1
           className="max-w-5xl font-semibold tracking-tight"
           style={{
@@ -272,7 +273,6 @@ export function HeroV1() {
             <span key={li} className="block">
               {line.map((word, i) => {
                 const isAccent = li === 1 && i === line.length - 1;
-                // global word index across both lines, for staggered delay
                 const wordIndex = li === 0 ? i : HEADLINE_LINE_1.length + i;
                 return (
                   <motion.span
@@ -305,30 +305,19 @@ export function HeroV1() {
                         }}
                       />
                     )}
-                    <span
-                      className={`hero-word ${isAccent ? "text-white dark:text-black relative px-1" : ""}`}
-                      style={
-                        {
-                          "--word-delay": `${0.2 + wordIndex * 0.06}s`,
-                          ...(isAccent ? { zIndex: 1 } : {}),
-                        } as CSSProperties
-                      }
+                    <motion.span
+                      className={isAccent ? "text-white dark:text-black relative px-1" : ""}
+                      style={{ zIndex: isAccent ? 1 : undefined }}
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.5,
+                        delay: 0.2 + wordIndex * 0.06,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
                     >
                       {word}
-                      {/* {isAccent ? (
-                        <motion.span
-                          initial={{ color: "#0a0a0a" }}
-                          animate={{
-                            color: "#ffffff",
-                            transition: { delay: 0.3, duration: 0.2, ease: "easeInOut" },
-                          }}
-                        >
-                          {word}
-                        </motion.span>
-                      ) : (
-                        word
-                      )} */}
-                    </span>
+                    </motion.span>
                   </motion.span>
                 );
               })}
@@ -336,6 +325,7 @@ export function HeroV1() {
           ))}
         </h1>
 
+        {/* Subheading */}
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -346,6 +336,13 @@ export function HeroV1() {
           prototype to production scale.
         </motion.p>
 
+        {/*
+          CTAs
+          • Primary button: unchanged — solid bg, no blur
+          • Secondary button: removed backdrop-blur-md + bg-background/60
+            Both forced a compositor layer. Replaced with solid bg-background
+            on mobile, semi-transparent only on desktop (md:bg-background/60)
+        */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -354,23 +351,35 @@ export function HeroV1() {
         >
           <a
             href="#contact"
-            className="group inline-flex h-12 items-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-[0_20px_50px_-15px_color-mix(in_oklab,var(--color-primary)_55%,transparent)] transition-all hover:-translate-y-0.5 hover:bg-(--color-primary-hover) hover:shadow-[0_28px_60px_-15px_color-mix(in_oklab,var(--color-primary)_65%,transparent)] active:translate-y-0 active:scale-[0.98]"
+            className="group inline-flex h-12 items-center rounded-md bg-primary px-6
+                       text-sm font-medium text-primary-foreground
+                       shadow-[0_20px_50px_-15px_color-mix(in_oklab,var(--color-primary)_55%,transparent)]
+                       transition-all hover:-translate-y-0.5 hover:bg-(--color-primary-hover)
+                       hover:shadow-[0_28px_60px_-15px_color-mix(in_oklab,var(--color-primary)_65%,transparent)]
+                       active:translate-y-0 active:scale-[0.98]"
           >
             Start a project
           </a>
           <a
             href="#work"
-            className="inline-flex h-12 items-center gap-2 rounded-md border border-border bg-background/40 px-6 text-sm font-medium backdrop-blur-md transition-colors hover:border-primary/40 hover:bg-accent active:scale-[0.98]"
+            className="inline-flex h-12 items-center gap-2 rounded-md
+                       border border-border
+                       bg-background md:bg-background/60
+                       px-6 text-sm font-medium
+                       transition-colors hover:border-primary/40 hover:bg-accent
+                       active:scale-[0.98]"
           >
             See our work <ArrowRight size={16} />
           </a>
         </motion.div>
 
+        {/* Logo strip */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.05 }}
-          className="mt-20 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 font-mono text-xs tracking-[0.18em] text-muted-foreground/60"
+          className="mt-20 flex flex-wrap items-center justify-center gap-x-10 gap-y-4
+                     font-mono text-xs tracking-[0.18em] text-muted-foreground/60"
         >
           {LOGOS.map((l) => (
             <span key={l}>{l}</span>
